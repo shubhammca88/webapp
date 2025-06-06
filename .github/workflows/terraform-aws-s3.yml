@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -20,4 +20,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
       - name: Deploy static site to S3 bucket
-        run: aws s3 sync . s3://my-app-00188 --delete
+        run: aws s3 sync . s3://${{ secrets.S3_BUCKET_NAME }} --delete
+        
+      - name: Output S3 website URL
+        run: echo "Website is available at http://${{ secrets.S3_BUCKET_NAME }}.s3-website-${{ secrets.AWS_REGION || 'us-east-1' }}.amazonaws.com"
