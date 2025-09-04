@@ -9,13 +9,6 @@ pipeline {
             }
         }
         
-        stage('Build') {
-            steps {
-                echo 'Building static website...'
-                sh 'ls -la'
-            }
-        }
-        
         stage('Test') {
             steps {
                 echo 'Running tests...'
