@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building static website...'
+                echo 'Building static website......'
                 sh 'ls -la'
             }
         }
