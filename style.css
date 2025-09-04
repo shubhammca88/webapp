@@ -9,6 +9,13 @@
     
 }
 
+body {
+    padding-top: 70px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
 :root{
     --main-color:#811a00;
     --second-color:#391e2e;
@@ -28,16 +35,34 @@ img{
 header{
     position: fixed;
     width: 100%;
-    top: 0;
+    top: 30px;
     right: 0;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #fff;
-    box-shadow:  0 4px 41px rgb(14 55 54 / 14%);
-    padding: 15px 10%;
-    transition: 0.2s;
+    background-color: transparent;
+    padding: 8px 10%;
+    transition: 0.3s;
+    max-width: 1200px;
+    margin: 0 auto;
+    left: 0;
+}
+
+header.scrolled {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 5px 8%;
+}
+
+header.scrolled .logo img {
+    width: 25px;
+}
+
+header.scrolled .navbar a {
+    font-size: 0.8rem;
+    padding: 3px 12px;
 }
 .logo{
     display: flex;
@@ -45,7 +70,7 @@ header{
 
 }
 .logo img{
-    width: 40px;
+    width: 30px;
 }
 .navbar{
     display: flex;
@@ -53,8 +78,8 @@ header{
     
 }
 .navbar a{
-    font-size: 1rem;
-    padding: 10px 20px ;
+    font-size: 0.9rem;
+    padding: 5px 15px;
     color: var(--second-color);
     font-weight: 600;
     text-transform: uppercase;
@@ -88,7 +113,7 @@ header{
 
 }
 .home-img{
-    flex: 1 1 19rem;
+    flex: 1 1 25rem;
     
 
 }
@@ -111,20 +136,20 @@ header{
 }
 
 .home-text span{
-    font-size: 1rem;
+    font-size: 1.3rem;
     text-transform: uppercase;
     font-weight: 600;
     color: var(--second-color);
 
 }
 .home-text h1{
-    font-size: 3.2rem;
+    font-size: 4.5rem;
     color: var(--main-color);
     font-weight: bolder;
 
 }
 .home-text h2{
-    font-size: 1.8rem;
+    font-size: 2.5rem;
     font-weight: 600;
     color: var(--second-color);
     text-transform: uppercase;
@@ -156,12 +181,12 @@ header{
 }
 .heading span{
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.3rem;
     color: var(--second-color);
     text-transform: uppercase;
 }
 .heading h1{
-    font-size: 2rem;
+    font-size: 4.5rem;
     font-weight: bolder;
     color: var(--main-color);
     text-transform: uppercase;
@@ -209,7 +234,7 @@ header{
 }
 .shop-container .box h2{
     color: #ebdbc8;
-    font-size: 1.2rem;
+    font-size: 2rem;
     font-weight: 500;
     margin: 0.2rem  0 0.5rem ;
 }
@@ -231,14 +256,14 @@ header{
     margin-top: 2rem;
 }
 .delivery-img , .app-img{
-    flex: 1 1 21rem;
+    flex: 1 1 25rem;
 
 }
 .delivery-text , .app-text{
-    flex: 1 1 21rem;
+    flex: 1 1 25rem;
 }
 .delivery-text h2 , .app-text h2{
-    font-size: 1.2rem;
+    font-size: 2.5rem;
     color: var(--second-color);
 
 }
@@ -265,15 +290,15 @@ header{
     gap: 1.5rem;
 }
 .about-img{
-    flex: 1 1 17rem;
+    flex: 1 1 25rem;
     
 
 }
 .about-text{
-    flex: 1 1 17rem;
+    flex: 1 1 25rem;
 }
 .about-text h2{
-    font-size: 1.2rem;
+    font-size: 2.5rem;
     color: var(--second-color);
 }
 .about-text p{
@@ -349,6 +374,9 @@ header{
     }
 }
 @media (max-width:768px){
+    body {
+        padding-top: 60px;
+    }
     header{
         padding:11px 4%;
     }
