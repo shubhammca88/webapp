@@ -75,7 +75,7 @@ EOF
                 echo 'Verifying deployment...'
                 sh '''
                     sudo systemctl status nginx --no-pager
-                    curl -f http://localhost/ || echo "Service check failed"
+                    curl -f http://localhost:8080/ || echo "Service check failed"
                 '''
             }
         }
@@ -83,7 +83,7 @@ EOF
     
     post {
         success {
-            echo "✅ Deployment successful! App available at http://${SERVER_HOST}/"
+            echo "✅ Deployment successful! App available at http://3.110.210.57:8080/"
         }
         failure {
             echo '❌ Deployment failed!'
