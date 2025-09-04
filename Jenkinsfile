@@ -1,5 +1,12 @@
 pipeline {
-    agent any
+    agent { label 'ec2-agent' }
+    
+    environment {
+        SERVER_HOST = sh(script: 'hostname -I | awk "{print \$1}"', returnStdout: true).trim()
+        SERVER_USER = sh(script: 'whoami', returnStdout: true).trim()
+        NGINX_ROOT = '/var/www/html'
+        APP_NAME = 'webapp'
+    }
     
     stages {
         stage('Build') {
@@ -16,28 +23,73 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+        stage('Install Nginx') {
             steps {
-                echo 'Deploying to web server...'
-                sh 'mkdir -p /tmp/webapp && cp -r * /tmp/webapp/'
-                echo 'Files deployed to /tmp/webapp/'
+                echo 'Installing nginx on current agent...'
+                sh '''
+                    sudo apt update
+                    sudo apt install -y nginx
+                    sudo systemctl enable nginx
+                    sudo systemctl start nginx
+                '''
+            }
+        }
+        
+        stage('Deploy to Server') {
+            steps {
+                echo 'Deploying to nginx on current agent...'
+                sh '''
+                    sudo mkdir -p ${NGINX_ROOT}/${APP_NAME}
+                    sudo cp -r * ${NGINX_ROOT}/${APP_NAME}/
+                    sudo chown -R www-data:www-data ${NGINX_ROOT}/${APP_NAME}
+                    sudo chmod -R 755 ${NGINX_ROOT}/${APP_NAME}
+                '''
+            }
+        }
+        
+        stage('Configure Nginx') {
+            steps {
+                echo 'Configuring nginx...'
+                sh '''
+                    sudo tee /etc/nginx/sites-available/${APP_NAME} > /dev/null <<EOF
+server {
+    listen 80;
+    server_name _;
+    root ${NGINX_ROOT}/${APP_NAME};
+    index index.html;
+    
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
+                    sudo ln -sf /etc/nginx/sites-available/${APP_NAME} /etc/nginx/sites-enabled/
+                    sudo nginx -t
+                    sudo systemctl reload nginx
+                '''
             }
         }
         
         stage('Verify') {
             steps {
                 echo 'Verifying deployment...'
-                sh 'ls -la /tmp/webapp/ && echo "Deployment verified"'
+                sh '''
+                    sudo systemctl status nginx --no-pager
+                    curl -f http://localhost/ || echo "Service check failed"
+                '''
             }
         }
     }
     
     post {
         success {
-            echo '✅ Deployment successful!'
+            echo "✅ Deployment successful! App available at http://${SERVER_HOST}/"
         }
         failure {
             echo '❌ Deployment failed!'
+        }
+        cleanup {
+            echo 'Cleanup completed'
         }
     }
 }
