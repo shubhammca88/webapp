@@ -53,7 +53,7 @@ pipeline {
                 sh '''
                     sudo tee /etc/nginx/sites-available/${APP_NAME} > /dev/null <<EOF
 server {
-    listen 80;
+    listen 8080;
     server_name _;
     root ${NGINX_ROOT}/${APP_NAME};
     index index.html;
