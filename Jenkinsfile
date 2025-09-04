@@ -2,9 +2,10 @@ pipeline {
     agent any
     
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git url: 'https://github.com/your-username/static-webapp.git'
+                echo 'Building static website...'
+                sh 'ls -la'
             }
         }
         
