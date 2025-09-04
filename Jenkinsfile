@@ -56,7 +56,7 @@ pipeline {
                 sh '''
                     sudo tee /etc/nginx/sites-available/${APP_NAME} > /dev/null <<EOF
 server {
-    listen 5000;
+    listen 8080;
     server_name _;
     root ${NGINX_ROOT}/${APP_NAME};
     index index.html;
@@ -78,7 +78,7 @@ EOF
                 echo 'Verifying deployment...'
                 sh '''
                     sudo systemctl status nginx --no-pager
-                    curl -f http://localhost:5000/ || echo "Service check failed"
+                    curl -f http://localhost:8080/ || echo "Service check failed"
                 '''
             }
         }
@@ -86,7 +86,7 @@ EOF
     
     post {
         success {
-            echo "✅ Deployment successful! App available at http://3.110.210.57:5000/"
+            echo "✅ Deployment successful! App available at http://3.110.210.57:8080/"
         }
         failure {
             echo '❌ Deployment failed!'
