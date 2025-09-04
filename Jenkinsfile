@@ -23,11 +23,28 @@ pipeline {
             }
         }
         
+        stage('Configure EC2 Server') {
+            steps {
+                echo 'Configuring EC2 server...'
+                sh '''
+                    # Install required packages
+                    sudo apt update
+                    sudo apt install -y ufw
+                    
+                    # Configure firewall
+                    sudo ufw allow 22/tcp
+                    sudo ufw allow 8080/tcp
+                    sudo ufw --force enable
+                    
+                    echo "Firewall configured for port 8080"
+                '''
+            }
+        }
+        
         stage('Install Nginx') {
             steps {
                 echo 'Installing nginx on current agent...'
                 sh '''
-                    sudo apt update
                     sudo apt install -y nginx
                     sudo systemctl enable nginx
                     sudo systemctl start nginx
@@ -66,7 +83,7 @@ server {
     index index.html;
     
     location / {
-        try_files \$uri \$uri/ =404;
+        try_files \\\$uri \\\$uri/ /index.html;
     }
 }
 EOF
@@ -74,11 +91,6 @@ EOF
                     sudo nginx -t
                     sudo systemctl reload nginx
                     
-                    # Debug info
-                    echo "Active nginx sites:"
-                    sudo ls -la /etc/nginx/sites-enabled/
-                    echo "Nginx processes:"
-                    sudo ss -tlnp | grep nginx || echo "No nginx processes found"
                 '''
             }
         }
