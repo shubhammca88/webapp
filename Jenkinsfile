@@ -78,7 +78,7 @@ EOF
                     echo "Active nginx sites:"
                     sudo ls -la /etc/nginx/sites-enabled/
                     echo "Nginx processes:"
-                    sudo netstat -tlnp | grep nginx
+                    sudo ss -tlnp | grep nginx || echo "No nginx processes found"
                 '''
             }
         }
