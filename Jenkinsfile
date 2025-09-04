@@ -54,6 +54,10 @@ pipeline {
             steps {
                 echo 'Configuring nginx...'
                 sh '''
+                    # Remove default nginx site
+                    sudo rm -f /etc/nginx/sites-enabled/default
+                    
+                    # Create webapp config
                     sudo tee /etc/nginx/sites-available/${APP_NAME} > /dev/null <<EOF
 server {
     listen 8080;
@@ -69,6 +73,12 @@ EOF
                     sudo ln -sf /etc/nginx/sites-available/${APP_NAME} /etc/nginx/sites-enabled/
                     sudo nginx -t
                     sudo systemctl reload nginx
+                    
+                    # Debug info
+                    echo "Active nginx sites:"
+                    sudo ls -la /etc/nginx/sites-enabled/
+                    echo "Nginx processes:"
+                    sudo netstat -tlnp | grep nginx
                 '''
             }
         }
@@ -78,7 +88,10 @@ EOF
                 echo 'Verifying deployment...'
                 sh '''
                     sudo systemctl status nginx --no-pager
-                    curl -f http://localhost:8080/ || echo "Service check failed"
+                    echo "Testing webapp access:"
+                    curl -I http://localhost:8080/ || echo "Service check failed"
+                    echo "Checking if index.html exists:"
+                    sudo test -f ${NGINX_ROOT}/${APP_NAME}/index.html && echo "index.html found" || echo "index.html missing"
                 '''
             }
         }
